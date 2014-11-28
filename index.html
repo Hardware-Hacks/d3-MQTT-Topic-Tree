@@ -47,13 +47,13 @@ path.link {
     </div>
     <script type="text/javascript">
 
-setup("body");
+setup("body"); //Supply tag for d3 tree to attach to. "body" is id of div
 
 var ws = new WebSocket('ws://'+document.location.hostname+':1880/');
 
-ws.open=onConnect;
-ws.onmessage = onMessage;
-ws.onclose = onDisconnect;
+ws.open = onConnect; //Open websocket and run onConnect function
+ws.onmessage = onMessage(message); //When message is received run onMessage
+ws.onclose = onDisconnect; // When disconnected run onDisconnect
 
 function onConnect(){
 	console.log("mqtt connected...");
