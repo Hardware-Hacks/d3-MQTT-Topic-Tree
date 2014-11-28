@@ -49,25 +49,23 @@ path.link {
 
 setup("body");
 
-var client = new Messaging.Client(document.location.hostname,1883,"web" + new Date().getTime());
-client.onMessageArrived = onMessage;
-client.onconnectionlost = onDisconnect;
-function onConnect(){
-	client.subscribe('#',onMessage);
-	console.log("mqtt connected");
-}
+var ws = new WebSocket('ws://'+document.location.hostname+':1880/');
 
-console.log("bar");
-client.connect({onSuccess:onConnect});
+ws.open=onConnect;
+ws.onmessage = onMessage;
+ws.onclose = onDisconnect;
+
+function onConnect(){
+	console.log("mqtt connected...");
+}
 
 function onMessage(message) {
-	//console.log(message.topic + "- " + message.payload);
-	addNode(message.destinationName, message.payloadString);
+	console.log(message.payload);
+	//addNode(message.destinationName, message.payloadString);
 }
 
-function onDisconnect(reason) {
-	console.log("disconnected - " + reason);
-	alert("disconnected - " + reason);
+function onDisconnect() {
+	console.log("disconnected...");
 }
     </script>
   </body>
