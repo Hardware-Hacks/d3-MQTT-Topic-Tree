@@ -49,10 +49,10 @@ path.link {
 
 setup("body"); //Supply tag for d3 tree to attach to. "body" is id of div
 
-var ws = new WebSocket('ws://'+document.location.hostname+':1880/');
+var ws = new WebSocket('ws://'+document.location.hostname+':1880/ws/pa');
 
 ws.open = onConnect; //Open websocket and run onConnect function
-ws.onmessage = onMessage(message); //When message is received run onMessage
+ws.onmessage = onMessage; //When message is received run onMessage
 ws.onclose = onDisconnect; // When disconnected run onDisconnect
 
 function onConnect(){
@@ -60,8 +60,15 @@ function onConnect(){
 }
 
 function onMessage(message) {
-	console.log(message.payload);
-	//addNode(message.destinationName, message.payloadString);
+var str = message.data.toString(); //Ensure we are working with strings
+var re = /^(.+)\|(.+)/i; //Regex to split succesfully
+var found = str.match(re); //Match our reg ex into an array
+var topic = String(found[1]); //Split out our topic
+var payload = String(found[2]); //Split out our payload
+
+payload = payload.replace(/\//g,""); //Remove anything that could look like a topic in payload
+addNode(topic,payload);
+
 }
 
 function onDisconnect() {
